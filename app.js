@@ -6,20 +6,24 @@ const rootdir = require('./utils/path');
 
 const app = express();
 
-const adminroute = require('./routes/admin');
+const adminData = require('./routes/admin');
 const shoproute = require('./routes/shop');
+
+app.set('view engine', 'pug');
+app.set('views', 'views');
 
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(express.static(path.join(rootdir, 'public')));
 
 // ROUTES
-app.use('/admin', adminroute);
+app.use('/admin', adminData.routes);
 app.use(shoproute);
 
 // error route
 app.use((req, res) => {
   console.log('Error 404');
-  res.status(404).sendFile(path.join(rootdir, 'views', 'error.html'));
+  // res.status(404).sendFile(path.join(rootdir, 'views', 'error.html'));
+  res.status(404).render('404', { pageTitle: 'error' });
 });
 
 const PORT = 3000;
