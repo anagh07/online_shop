@@ -1,0 +1,27 @@
+<main>
+    {{#if prodCheck }}
+    <div class="grid">
+        {{#each prod}}
+        <article class="card product-item">
+            <header class="card__header">
+                <h1 class="product__title">{{this.title}}</h1>
+            </header>
+            <div class="card__image">
+                <img src="https://dictionary.cambridge.org/images/thumb/book_noun_001_01679.jpg?version=5.0.102"
+                    alt="A Book">
+            </div>
+            <div class="card__content">
+                <h2 class="product__price">$19.99</h2>
+                <p class="product__description">A random book about random things that happened to random people at
+                    random times for random reasons in random places.</p>
+            </div>
+            <div class="card__actions">
+                <button class="btn">Add to Cart</button>
+            </div>
+        </article>
+        {{/each}}
+    </div>
+    {{else}}
+    <h2>No product available at this time.</h2>
+    {{/if}}
+</main>
