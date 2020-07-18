@@ -6,8 +6,9 @@ const rootdir = require('./utils/path');
 
 const app = express();
 
-const adminData = require('./routes/admin');
-const shoproute = require('./routes/shop');
+const adminRoute = require('./routes/admin');
+const shopRoute = require('./routes/shop');
+const error404Route = require('./controllers/error');
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -16,15 +17,11 @@ app.use(bodyparser.urlencoded({ extended: false }));
 app.use(express.static(path.join(rootdir, 'public')));
 
 // ROUTES
-app.use('/admin', adminData.routes);
-app.use(shoproute);
+app.use('/admin', adminRoute);
+app.use(shopRoute);
 
 // error route
-app.use((req, res) => {
-  console.log('Error 404');
-  // res.status(404).sendFile(path.join(rootdir, 'views', 'error.html'));
-  res.status(404).render('404', { pageTitle: 'error', path: '404' });
-});
+app.use(error404Route.get404);
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
