@@ -9,7 +9,6 @@ const path_data = path.join(
 );
 
 const readDataFile = (callback) => {
-
   fs.readFile(path_data, (err, fileData) => {
     if (err) callback([]);
     else callback(JSON.parse(fileData));
@@ -17,8 +16,11 @@ const readDataFile = (callback) => {
 };
 
 module.exports = class Product {
-  constructor(t) {
-    this.title = t;
+  constructor(title, imageUrl, price, desc) {
+    this.title = title;
+    this.imageUrl = imageUrl;
+    this.price = price;
+    this.desc = desc;
   }
 
   save() {
