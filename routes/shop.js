@@ -4,24 +4,38 @@ const router = express.Router();
 
 const shopController = require('../controllers/shop');
 
-// @METHOD  GET 
+// @METHOD  GET
 // @ROUTE   /
 router.get('/', shopController.getIndex);
 
-// @METHOD  GET 
+// @METHOD  GET
 // @ROUTE   /prod-list
 router.get('/prod-list', shopController.getAllProductList);
 
-// @METHOD  GET 
+// @METHOD  GET
 // @ROUTE   /cart
 router.get('/cart', shopController.getCart);
 
-// @METHOD  GET 
+// @METHOD  POST
+// @ROUTE   /cart
+// @DESC    add item to cart
+router.post('/cart', shopController.addToCart);
+
+// @METHOD  POST
+// @ROUTE   /cart/delete-cart-item
+// @DESC    delete item from cart
+router.post('/cart/delete-cart-item', shopController.deleteFromCart);
+
+// @METHOD  GET
 // @ROUTE   /orders
 router.get('/orders', shopController.getOrders);
 
-// @METHOD  GET 
+// @METHOD  GET
 // @ROUTE   /checkout
 router.get('/checkout', shopController.getCheckout);
+
+// @METHOD  GET
+// @ROUTE   /prod-list/:prodId
+router.get('/prod-list/:prodId', shopController.getProductDetails);
 
 module.exports = router;

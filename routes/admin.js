@@ -13,8 +13,16 @@ router.get('/add-product', adminController.getAddProducts);
 router.post('/add-product', adminController.postAddProducts);
 
 // @METHOD  GET 
-// @ROUTE   /admin/edit-product
-router.get('/edit-product', adminController.editProduct);
+// @ROUTE   /admin/edit-product/:prodId
+router.get('/edit-product/:prodId', adminController.getEditProduct);
+
+// @METHOD  POST 
+// @ROUTE   /admin/edit-product/:prodId
+router.post('/edit-product/:prodId', adminController.postEditProduct);
+
+// @METHOD  POST 
+// @ROUTE   /admin/delete-product
+router.post('/delete-product', adminController.deleteProduct);
 
 // @METHOD  GET 
 // @ROUTE   /admin/product-list
