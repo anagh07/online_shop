@@ -12,9 +12,11 @@ exports.postAddProducts = (req, res, next) => {
   // Extract data from req.body
   const { title, imageUrl, price, desc } = req.body;
   // Create new product object
-  const product = new Product(title, imageUrl, price, desc);
-  product.save();
-  res.redirect('/');
+  const product = new Product(null, title, imageUrl, price, desc);
+  product
+    .save()
+    .then(() => res.redirect('/'))
+    .catch((err) => console.log(err));
 };
 
 exports.getEditProduct = (req, res) => {
@@ -46,11 +48,13 @@ exports.deleteProduct = (req, res) => {
 };
 
 exports.getProductsList = (req, res) => {
-  Product.fetchAll((data) => {
-    res.render('admin/product-list', {
-      prod: data,
-      path: '/admin/products',
-      pageTitle: 'Admin Product List',
-    });
-  });
+  Product.fetchAll()
+    .then(([data]) => {
+      res.render('admin/product-list', {
+        prod: data,
+        path: '/admin/products',
+        pageTitle: 'Admin Product List',
+      });
+    })
+    .catch((err) => console.log(err));
 };
