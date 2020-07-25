@@ -3,6 +3,7 @@ const bodyparser = require('body-parser');
 const path = require('path');
 
 const rootdir = require('./utils/path');
+const sequelize = require('./utils/database');
 
 const app = express();
 
@@ -22,6 +23,14 @@ app.use(shopRoute);
 
 // error route
 app.use(error404Route.get404);
+
+// Create/sync tables with models
+sequelize
+  .sync()
+  .then((result) => {
+    console.log('DB synced with models');
+  })
+  .catch((err) => console.log(err));
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
