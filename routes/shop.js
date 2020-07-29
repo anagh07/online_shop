@@ -12,27 +12,27 @@ router.get('/', shopController.getIndex);
 // @ROUTE   /prod-list
 router.get('/prod-list', shopController.getAllProductList);
 
-// @METHOD  GET
-// @ROUTE   /cart
-router.get('/cart', shopController.getCart);
+// // @METHOD  GET
+// // @ROUTE   /cart
+// router.get('/cart', shopController.getCart);
 
 // @METHOD  POST
 // @ROUTE   /cart
 // @DESC    add item to cart
 router.post('/cart', shopController.addToCart);
 
-// @METHOD  POST
-// @ROUTE   /cart/delete-cart-item
-// @DESC    delete item from cart
-router.post('/cart/delete-cart-item', shopController.deleteFromCart);
+// // @METHOD  POST
+// // @ROUTE   /cart/delete-cart-item
+// // @DESC    delete item from cart
+// router.post('/cart/delete-cart-item', shopController.deleteFromCart);
 
-// @METHOD  GET
-// @ROUTE   /orders
-router.get('/orders', shopController.getOrder);
+// // @METHOD  GET
+// // @ROUTE   /orders
+// router.get('/orders', shopController.getOrder);
 
-// @METHOD  GET
-// @ROUTE   /checkout
-router.post('/place-order', shopController.postOrder);
+// // @METHOD  GET
+// // @ROUTE   /checkout
+// router.post('/place-order', shopController.postOrder);
 
 // @METHOD  GET
 // @ROUTE   /prod-list/:prodId
