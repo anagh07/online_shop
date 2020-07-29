@@ -11,12 +11,13 @@ exports.getAddProducts = (req, res, next) => {
 exports.postAddProducts = (req, res, next) => {
   // Extract data from req.body
   const { title, imageUrl, price, desc } = req.body;
-  Product.create({
-    title: title,
-    price: price,
-    imageUrl: imageUrl,
-    desc: desc,
-  })
+  req.user
+    .createProduct({
+      title: title,
+      price: price,
+      imageUrl: imageUrl,
+      desc: desc,
+    })
     .then((result) => {
       res.redirect('/');
     })
@@ -25,14 +26,15 @@ exports.postAddProducts = (req, res, next) => {
 
 exports.getEditProduct = (req, res) => {
   const prodId = req.params.prodId;
-  Product.findById(prodId)
-    .then((prod) => {
-      if (!prod) return res.redirect('/admin/products');
+  req.user
+    .getProducts({ where: { id: prodId } })
+    .then((prods) => {
+      if (!prods) return res.redirect('/admin/products');
       res.render('admin/edit-product.ejs', {
         pageTitle: 'Edit Product',
         path: '/admin/edit-product',
         editMode: true,
-        prod: prod,
+        prod: prods[0],
       });
     })
     .catch((err) => console.log(err));
@@ -70,7 +72,7 @@ exports.deleteProduct = (req, res) => {
 };
 
 exports.getProductsList = (req, res) => {
-  Product.findAll()
+  req.user.getProducts()
     .then((prods) => {
       res.render('admin/product-list', {
         prod: prods,

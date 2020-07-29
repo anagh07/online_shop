@@ -28,11 +28,11 @@ router.post('/cart/delete-cart-item', shopController.deleteFromCart);
 
 // @METHOD  GET
 // @ROUTE   /orders
-router.get('/orders', shopController.getOrders);
+router.get('/orders', shopController.getOrder);
 
 // @METHOD  GET
 // @ROUTE   /checkout
-router.get('/checkout', shopController.getCheckout);
+router.post('/place-order', shopController.postOrder);
 
 // @METHOD  GET
 // @ROUTE   /prod-list/:prodId

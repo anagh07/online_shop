@@ -5,7 +5,18 @@
     <%- include('../includes/nav.ejs') %>
 
     <main>
-      <p>Orders</p>
+      <ul>
+        <% orders.forEach(order => { %>
+          <li>
+            <h3><%= order.id %> </h3>
+            <ul>
+              <% order.products.forEach(prod => { %> 
+                <li><%= prod.title %> - <%= prod.orderItem.qty %> </li>
+              <% }) %> 
+            </ul>
+          </li>
+        <% }) %> 
+      </ul>
     </main>
 
 <%- include('../includes/tail.ejs') %>

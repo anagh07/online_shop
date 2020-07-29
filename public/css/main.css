@@ -201,10 +201,22 @@ form {
   cursor: pointer;
 }
 
+.btn.delete {
+  border: 1.5px solid #af4e4e;
+  color: #af4e4e
+}
+
+
 .btn:hover,
 .btn:active {
   color: #ffffff;
   background: #535353;
+}
+
+.btn.delete:hover,
+.btn.delete:active {
+  color: #ffffff;
+  background: #a81515;
 }
 
 @media (min-width: 768px) {
