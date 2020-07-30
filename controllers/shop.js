@@ -38,23 +38,18 @@ exports.getProductDetails = (req, res) => {
     .catch((err) => console.log(err));
 };
 
-// exports.getCart = (req, res) => {
-//   req.user
-//     .getCart()
-//     .then((cart) => {
-//       cart
-//         .getProducts()
-//         .then((products) => {
-//           res.render('shop/cart', {
-//             path: '/cart',
-//             pageTitle: 'My Cart',
-//             products: products,
-//           });
-//         })
-//         .catch((err) => console.log(err));
-//     })
-//     .catch((err) => console.log(err));
-// };
+exports.getCart = (req, res) => {
+  req.user
+    .getCart()
+    .then((products) => {
+      res.render('shop/cart', {
+        path: '/cart',
+        pageTitle: 'My Cart',
+        products: products,
+      });
+    })
+    .catch((err) => console.log(err));
+};
 
 exports.addToCart = (req, res) => {
   const prodId = req.body.prodId;
@@ -63,7 +58,9 @@ exports.addToCart = (req, res) => {
       // console.log(prod);
       return req.user.addToCart(prod);
     })
-    .then((result) => {});
+    .then((result) => {
+      res.redirect(req.get('referer'));
+    });
 
   // req.user
   //   .getCart()
@@ -89,27 +86,20 @@ exports.addToCart = (req, res) => {
   //   })
   //   .then(() => {
   //     // console.log(req);
-  //     res.redirect(req.get('referer'));
+  //     
   //   })
   //   .catch((err) => console.log(err));
 };
 
-// exports.deleteFromCart = (req, res) => {
-//   const prodId = req.body.prodId;
-//   req.user
-//     .getCart()
-//     .then((cart) => {
-//       return cart.getProducts({ where: { id: prodId } });
-//     })
-//     .then((products) => {
-//       let product = products[0];
-//       return product.cartItem.destroy();
-//     })
-//     .then((result) => {
-//       res.redirect('/cart');
-//     })
-//     .catch((err) => console.log(err));
-// };
+exports.deleteFromCart = (req, res) => {
+  const prodId = req.body.prodId;
+  req.user
+    .deleteItemFromCart(prodId)
+    .then((result) => {
+      res.redirect('/cart');
+    })
+    .catch((err) => console.log(err));
+};
 
 // exports.getOrder = (req, res) => {
 //   req.user

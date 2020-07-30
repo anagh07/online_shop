@@ -6,7 +6,7 @@ class User {
   constructor(name, email, cart, id) {
     this.name = name;
     this.email = email;
-    this.cart = cart; // { items: [{prod: x, quantity: y}] }
+    this.cart = cart; // { items: [{prodId: x, quantity: y}] }
     this._id = id ? id : null;
   }
 
@@ -60,7 +60,42 @@ class User {
         { _id: new mongodb.ObjectID(this._id) },
         { $set: { cart: updatedCart } }
       )
-      .then((result) => {})
+      .then((result) => { })
+      .catch((err) => console.log(err));
+  }
+
+  getCart() {
+    const db = getDb();
+    const prodIds = this.cart.items.map(item => {
+      return item.prodId;
+    })
+    return db.collection('products')
+      .find({ _id: { $in: prodIds } })
+      .toArray()
+      .then(products => {
+        return products.map(product => {
+          return {
+            ...product,
+            qty: this.cart.items.find(item => {
+              return item.prodId.toString() === product._id.toString();
+            }).qty
+          }
+        })
+      })
+  }
+
+  deleteItemFromCart(prodId) {
+    const db = getDb();
+    const updatedCartItems = this.cart.items.filter(item => {
+      return item.prodId.toString() !== prodId.toString();
+    });
+    return db
+      .collection('users')
+      .updateOne(
+        { _id: new mongodb.ObjectID(this._id) },
+        { $set: { cart: { items: updatedCartItems } } }
+      )
+      .then((result) => { })
       .catch((err) => console.log(err));
   }
 }
