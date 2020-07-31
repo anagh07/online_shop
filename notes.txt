@@ -6,3 +6,5 @@ onineshop1024
 
 lime https://www.livewellbakeoften.com/wp-content/uploads/2019/12/Key-Lime-Pie-2.jpg
 pizza https://www.acouplecooks.com/wp-content/uploads/2018/05/Loaded-Mexican-Pizza-023.jpg
+
+mongodb+srv://anagh:onineshop1024@onlineshop.ksyr2.mongodb.net/<dbname>?retryWrites=true&w=majority

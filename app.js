@@ -1,9 +1,9 @@
 const express = require('express');
 const bodyparser = require('body-parser');
 const path = require('path');
+const mongoose = require('mongoose');
 
 const rootdir = require('./utils/path');
-const dbconnect = require('./utils/database').dbconnect;
 const User = require('./models/user');
 
 const app = express();
@@ -22,9 +22,9 @@ app.use(express.static(path.join(rootdir, 'public')));
 
 // Middleware
 app.use((req, res, next) => {
-  User.findById('5f213c65e677a84d101be0bc')
+  User.findById('5f2399ec332e0b4b4c3fe1ae')
     .then((user) => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
+      req.user = user;
       // console.log(req.user);
       next();
     })
@@ -37,8 +37,29 @@ app.use(shopRoute);
 // error route
 app.use(error404Route.get404);
 
-dbconnect(() => {
-  // console.log(client);
-  console.log('MongoDB connected...');
-  app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-});
+// DB connect and server start
+mongoose
+  .connect(
+    'mongodb+srv://anagh:onineshop1024@onlineshop.ksyr2.mongodb.net/shop?retryWrites=true&w=majority',
+    { useNewUrlParser: true, useUnifiedTopology: true },
+    (err) => {
+      if (err) console.log(err);
+    }
+  )
+  .then(() => {
+    console.log('MongoDB connected...');
+
+    // // Create user
+    // const user = new User({
+    //   name: 'Anagh',
+    //   email: 'anagh@test.com',
+    //   cart: {
+    //     items: [],
+    //   },
+    // });
+    // user.save();
+
+    // Initialize server
+    app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+  })
+  .catch((err) => console.log(err));
