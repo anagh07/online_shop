@@ -1,5 +1,5 @@
 const Product = require('../models/product');
-const User = require('../models/user');
+const Order = require('../models/order');
 
 exports.getIndex = (req, res) => {
   Product.find()
@@ -45,7 +45,7 @@ exports.getCart = (req, res) => {
     .execPopulate()
     .then((user) => {
       const prods = user.cart.items;
-      console.log(prods);
+      // console.log(prods);
       res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'My Cart',
@@ -77,24 +77,41 @@ exports.deleteFromCart = (req, res) => {
     .catch((err) => console.log(err));
 };
 
-// exports.getOrder = (req, res) => {
-//   req.user
-//     .getOrders()
-//     .then((orders) => {
-//       res.render('shop/orders', {
-//         path: '/orders',
-//         pageTitle: 'My Orders',
-//         orders: orders,
-//       });
-//     })
-//     .catch((err) => console.log(err));
-// };
+exports.getOrder = (req, res) => {
+  Order.find({ 'user.userId': req.user._id })
+    .then((orders) => {
+      // console.log(orders);
+      res.render('shop/orders', {
+        path: '/orders',
+        pageTitle: 'My Orders',
+        orders: orders,
+      });
+    })
+    .catch((err) => console.log(err));
+};
 
-// exports.postOrder = (req, res) => {
-//   req.user
-//     .addOrder()
-//     .then((result) => {
-//       res.redirect('/orders');
-//     })
-//     .catch((err) => console.log(err));
-// };
+exports.postOrder = (req, res) => {
+  req.user
+    .populate('cart.items.prodId')
+    .execPopulate()
+    .then((user) => {
+      const products = user.cart.items.map((item) => {
+        return { product: { ...item.prodId._doc }, qty: item.qty };
+      });
+      const order = new Order({
+        user: {
+          name: req.user.name,
+          userId: req.user._id,
+        },
+        products: products,
+      });
+      return order.save();
+    })
+    .then((result) => {
+      return req.user.clearCart();
+    })
+    .then(() => {
+      res.redirect('/orders');
+    })
+    .catch((err) => console.log(err));
+};

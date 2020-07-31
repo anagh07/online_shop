@@ -13,10 +13,10 @@
               <% orders.forEach(order => { %>
                   <li class="orders__item">
                       <h3>Order - # <%= order._id %></h3>
-                      <p>Placed at: <%= order.createdAt.toUTCString() %> </p>
+                      <p>Placed at: <%= order.createdAt.getFullYear() %>-<%= order.createdAt.getMonth() %>-<%= order.createdAt.getDate() %> at <%= order.createdAt.getHours() %>:<%= order.createdAt.getMinutes() %></p>
                       <ul class="orders__products">
-                          <% order.items.forEach(prod => { %>
-                              <li class="orders__products-item"><%= prod.title %> (<%= prod.qty %>)  $<%= prod.price %> </li>
+                          <% order.products.forEach(prod => { %>
+                              <li class="orders__products-item"><%= prod.product.title %> (<%= prod.qty %>) --- $<%= prod.product.price %> </li>
                           <% }); %>
                       </ul>
                   </li>

@@ -26,13 +26,13 @@ router.post('/cart', shopController.addToCart);
 // @DESC    delete item from cart
 router.post('/cart/delete-cart-item', shopController.deleteFromCart);
 
-// // @METHOD  GET
-// // @ROUTE   /orders
-// router.get('/orders', shopController.getOrder);
+// @METHOD  GET
+// @ROUTE   /orders
+router.get('/orders', shopController.getOrder);
 
-// // @METHOD  POST
-// // @ROUTE   /checkout
-// router.post('/place-order', shopController.postOrder);
+// @METHOD  POST
+// @ROUTE   /checkout
+router.post('/place-order', shopController.postOrder);
 
 // @METHOD  GET
 // @ROUTE   /prod-list/:prodId
