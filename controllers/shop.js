@@ -8,6 +8,7 @@ exports.getIndex = (req, res) => {
         prod: prods,
         pageTitle: 'Shop',
         path: '/',
+        isLoggedIn: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -20,6 +21,7 @@ exports.getAllProductList = (req, res) => {
         prod: prods,
         pageTitle: 'Products',
         path: '/prod-list',
+        isLoggedIn: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -34,6 +36,7 @@ exports.getProductDetails = (req, res) => {
         path: '/prod-list',
         pageTitle: prod.title,
         prod: prod,
+        isLoggedIn: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -50,12 +53,16 @@ exports.getCart = (req, res) => {
         path: '/cart',
         pageTitle: 'My Cart',
         products: prods,
+        isLoggedIn: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
 };
 
 exports.addToCart = (req, res) => {
+  if (!req.session.isLoggedIn) {
+    return res.redirect('/login');
+  }
   const prodId = req.body.prodId;
   Product.findById(prodId)
     .then((prod) => {
@@ -85,6 +92,7 @@ exports.getOrder = (req, res) => {
         path: '/orders',
         pageTitle: 'My Orders',
         orders: orders,
+        isLoggedIn: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
