@@ -233,6 +233,20 @@ form {
   background: #a81515;
 }
 
+.feedback-msg {
+  margin: auto;
+  width: auto;
+  background: #a9c2c2;
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.feedback-msg--error {
+  background: #e7c7c7;
+  border: 1px solid #bb7878;
+}
+
 @media (min-width: 768px) {
   .main-header__nav {
     display: flex;

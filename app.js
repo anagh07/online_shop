@@ -4,10 +4,13 @@ const path = require('path');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
+const csrf = require('csurf');
+const flash = require('connect-flash');
 
 const rootdir = require('./utils/path');
 const User = require('./models/user');
 const KEYS = require('./config/keys');
+const passDataToViews = require('./middlewares/passDataToViews');
 
 const adminRoute = require('./routes/admin');
 const shopRoute = require('./routes/shop');
@@ -17,6 +20,7 @@ const error404Route = require('./controllers/error');
 const PORT = 3000;
 
 const app = express();
+const csrfProtection = csrf();
 
 // Set view engine and static folder
 app.set('view engine', 'ejs');
@@ -34,7 +38,6 @@ const sessionStore = new MongoDBStore({
   collection: 'sessionStore',
 });
 
-// Middleware
 // Create session and mention the store
 app.use(
   session({
@@ -57,6 +60,11 @@ app.use((req, res, next) => {
     .catch((err) => console.log(err));
 });
 
+// Middleware
+app.use(csrfProtection);
+app.use(passDataToViews);
+app.use(flash());
+
 // ROUTES
 app.use('/admin', adminRoute);
 app.use(shopRoute);
@@ -75,16 +83,6 @@ mongoose
   )
   .then(() => {
     console.log('MongoDB connected...');
-
-    // // Create user
-    // const user = new User({
-    //   name: 'Anagh',
-    //   email: 'anagh@test.com',
-    //   cart: {
-    //     items: [],
-    //   },
-    // });
-    // user.save();
 
     // Initialize server
     app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
