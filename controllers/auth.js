@@ -1,27 +1,21 @@
 const bcrypt = require('bcryptjs');
-// const nodemailer = require('nodemailer');
-// const sendGridTransport = require('nodemailer-sendgrid-transport');
 const sgMail = require('@sendgrid/mail');
+const crypto = require('crypto');
 
 const User = require('../models/user');
-const signupEmail = require('../data/signupEmail');
+// const signupEmail = require('../data/email').signupEmail;
+const {
+  signupEmail,
+  resetPasswordEmail,
+  resetSuccessEmail,
+} = require('../data/email');
 
 sgMail.setApiKey(
   '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'
 );
 
-// // Create transport
-// const transport = nodemailer.createTransport(
-//   sendGridTransport({
-//     auth: {
-//       api_key:
-//         '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',
-//     },
-//   })
-// );
-
 exports.getLogin = (req, res) => {
-  let errorMsg = req.flash('loginError');
+  let errorMsg = req.flash('error');
   if (errorMsg.length === 0) errorMsg = null;
   res.render('auth/login', {
     pageTitle: 'Login',
@@ -51,7 +45,7 @@ exports.postLogin = (req, res) => {
               res.redirect('/');
             });
           } else {
-            req.flash('loginError', 'Invalid email or password');
+            req.flash('error', 'Invalid email or password');
             console.log('Password mismatch');
             res.redirect('/login');
           }
@@ -103,8 +97,102 @@ exports.postSignup = (req, res) => {
         .then((result) => {
           res.redirect('/login');
           sgMail.send(signupEmail(email));
-          // return transport.sendMail(signupEmail(email));
         });
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.getResetPassword = (req, res) => {
+  let errorMsg = req.flash('errorNoAccount');
+  if (errorMsg.length === 0) errorMsg = null;
+  res.render('auth/reset-password', {
+    pageTitle: 'Reset Password',
+    path: '/reset-password',
+    errorMsg: errorMsg,
+  });
+};
+
+exports.postResetPassword = (req, res) => {
+  crypto.randomBytes(32, (err, buffer) => {
+    if (err) {
+      console.log(err);
+      return res.redirect('/reset-password');
+    }
+    const token = buffer.toString('hex');
+    User.findOne({ email: req.body.email })
+      .then((user) => {
+        if (!user) {
+          req.flash(
+            'errorNoAccount',
+            'No account found for the email you entered!'
+          );
+          return res.redirect('/reset-password');
+        }
+        user.resetToken = token;
+        user.resetTokenExpiry = Date.now() + 3600000;
+        return user.save();
+      })
+      .then((result) => {
+        req.flash(
+          'resetPasswordEmailSent',
+          'An email containing the link to resetting your password has been sent to your email.'
+        );
+        res.redirect('/');
+        sgMail.send(resetPasswordEmail(req.body.email, token));
+      })
+      .catch((err) => console.log(err));
+  });
+};
+
+exports.getNewPassword = (req, res) => {
+  const token = req.params.token;
+  User.findOne({
+    resetToken: token,
+    resetTokenExpiry: { $gt: Date.now() },
+  })
+    .then((user) => {
+      let message = req.flash('error');
+      message = message.length == 0 ? null : message;
+      res.render('auth/new-password', {
+        pageTitle: 'New Password',
+        path: '/new-password',
+        errorMsg: message,
+        userId: user._id.toString(),
+        passwordToken: token,
+      });
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.postNewPassword = (req, res) => {
+  const userId = req.body.userId;
+  const password = req.body.newpassword;
+  const confirmPassword = req.body.confirmpassword;
+  const passwordToken = req.body.passwordToken;
+  let updatedUser;
+
+  User.findOne({
+    resetToken: passwordToken,
+    resetTokenExpiry: { $gt: Date.now() },
+    _id: userId,
+  })
+    .then((user) => {
+      if (!user) {
+        req.flash('error', 'Expired token');
+        return res.redirect('/login');
+      }
+      updatedUser = user;
+      return bcrypt.hash(password, 12);
+    })
+    .then((hashedPassword) => {
+      updatedUser.password = hashedPassword;
+      updatedUser.resetToken = undefined;
+      updatedUser.resetTokenExpiry = undefined;
+      return updatedUser.save();
+    })
+    .then((result) => {
+      res.redirect('/login');
+      sgMail.send(resetSuccessEmail(updatedUser.email));
     })
     .catch((err) => console.log(err));
 };

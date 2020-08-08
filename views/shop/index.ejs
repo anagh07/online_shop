@@ -6,6 +6,9 @@
     <%- include('../includes/nav.ejs') %>
 
     <main>
+      <% if (errorMsg) { %> 
+        <div class="feedback-msg feedback-msg--error"><%= errorMsg %></div>
+      <% } %>
       <% if(prod.length > 0) { %>
         <div class="grid">
             <% for(let product of prod) { %>
