@@ -1,6 +1,24 @@
 const bcrypt = require('bcryptjs');
+// const nodemailer = require('nodemailer');
+// const sendGridTransport = require('nodemailer-sendgrid-transport');
+const sgMail = require('@sendgrid/mail');
 
 const User = require('../models/user');
+const signupEmail = require('../data/signupEmail');
+
+sgMail.setApiKey(
+  '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'
+);
+
+// // Create transport
+// const transport = nodemailer.createTransport(
+//   sendGridTransport({
+//     auth: {
+//       api_key:
+//         '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',
+//     },
+//   })
+// );
 
 exports.getLogin = (req, res) => {
   let errorMsg = req.flash('loginError');
@@ -84,6 +102,8 @@ exports.postSignup = (req, res) => {
         })
         .then((result) => {
           res.redirect('/login');
+          sgMail.send(signupEmail(email));
+          // return transport.sendMail(signupEmail(email));
         });
     })
     .catch((err) => console.log(err));

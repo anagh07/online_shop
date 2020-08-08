@@ -8,3 +8,8 @@ lime https://www.livewellbakeoften.com/wp-content/uploads/2019/12/Key-Lime-Pie-2
 pizza https://www.acouplecooks.com/wp-content/uploads/2018/05/Loaded-Mexican-Pizza-023.jpg
 
 mongodb+srv://anagh:onineshop1024@onlineshop.ksyr2.mongodb.net/<dbname>?retryWrites=true&w=majority
+
+sendgrid
+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
+
+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
