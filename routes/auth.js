@@ -1,4 +1,5 @@
 const express = require('express');
+const { body } = require('express-validator');
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ router.get('/signup', authController.getSignup);
 
 // @METHOD  POST
 // @ROUTE   /signup
-router.post('/signup', authController.postSignup);
+router.post('/signup', body('email').isEmail(), authController.postSignup);
 
 // @METHOD  GET
 // @ROUTE   /reset-password

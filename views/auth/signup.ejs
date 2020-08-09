@@ -8,7 +8,7 @@
 
     <main>
         <div class="flex-container__login-container">
-            <form class="login-form" action="/signup" method="POST">
+            <form class="login-form" action="/signup" method="POST" novalidate>
                 <% if (errorMsg) { %> 
                     <div class="feedback-msg feedback-msg--error"><%= errorMsg %></div>
                 <% } %>
