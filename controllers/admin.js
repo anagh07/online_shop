@@ -46,22 +46,26 @@ exports.postEditProduct = (req, res) => {
 
   Product.findById(prodId)
     .then((prod) => {
+      // If prod not posted by current user then exit
+      if (prod.userId.toString() !== req.user._id.toString()) {
+        req.flash('error', 'Cannot edit product not posted by self');
+        return res.redirect('/');
+      }
       prod.title = title;
       prod.imageUrl = imageUrl;
       prod.price = price;
       prod.desc = desc;
-      return prod.save();
-    })
-    .then((result) => {
-      // console.log('Product Updated');
-      res.redirect('/admin/products');
+      return prod.save().then((result) => {
+        // console.log('Product Updated');
+        res.redirect('/admin/products');
+      });
     })
     .catch((err) => console.log(err));
 };
 
 exports.deleteProduct = (req, res) => {
   const prodId = req.body.prodId;
-  Product.deleteOne({ _id: prodId })
+  Product.deleteOne({ _id: prodId, userId: req.user._id })
     .then((result) => {
       console.log('Product deleted');
       res.redirect('/admin/products');
@@ -70,7 +74,7 @@ exports.deleteProduct = (req, res) => {
 };
 
 exports.getProductsList = (req, res) => {
-  Product.find()
+  Product.find({ userId: req.user._id })
     // .populate('userId')
     .then((prods) => {
       // console.log(prods);

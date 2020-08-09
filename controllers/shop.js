@@ -4,8 +4,10 @@ const Order = require('../models/order');
 exports.getIndex = (req, res) => {
   Product.find()
     .then((prods) => {
-      let errorMsg = req.flash('resetPasswordEmailSent');
-      if (errorMsg.length === 0) errorMsg = null;
+      let tempMsg = req.flash('resetPasswordEmailSent');
+      let errorMsg = tempMsg.length === 0 ? null : tempMsg;
+      tempMsg = req.flash('error');
+      errorMsg = tempMsg.length === 0 ? null : tempMsg;
       res.render('shop/index', {
         prod: prods,
         pageTitle: 'Shop',
