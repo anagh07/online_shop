@@ -7,25 +7,27 @@
     <%- include('../includes/nav.ejs') %>
 
     <main>
-        <form class="login-form" action="/login" method="POST">
-            <% if (errorMsg) { %> 
-                <div class="feedback-msg feedback-msg--error"><%= errorMsg %></div>
-            <% } %>
-            <div class="form-control">
-                <label for="email">Email</label>
-                <input type="text" name="email" id="email">
-            </div>
-            <div class="form-control">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <label for="password">Password</label>
-                <input type="password" name="password" id="password">
-            </div>
-            <div class="centered" style="margin-bottom: 1rem;">
-                <button type="submit">Login</button>
-            </div>
-        </form>
-        <div class="centered">
-            <a href="/reset-password" class="centered">Forgot Password?</a>
+        <div class="flex-container__login-container">
+            <form class="login-form" action="/login" method="POST">
+                <% if (errorMsg) { %> 
+                    <div class="feedback-msg feedback-msg--error"><%= errorMsg %></div>
+                <% } %>
+                <div class="form-control">
+                    <label for="email">Email</label>
+                    <input type="text" name="email" id="email">
+                </div>
+                <div class="form-control">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password">
+                </div>
+                <div class="centered" style="margin-bottom: 1rem;">
+                    <button type="submit">Login</button>
+                </div>
+                <div class="centered">
+                    <a href="/reset-password" class="centered">Forgot Password?</a>
+                </div>
+            </form>
         </div>
     </main>
 <%- include('../includes/tail.ejs') %>

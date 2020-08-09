@@ -7,29 +7,32 @@
    <%- include('../includes/nav.ejs') %>
 
     <main>
-        <form class="login-form" action="/signup" method="POST">
-            <% if (errorMsg) { %> 
-                <div class="feedback-msg feedback-msg--error"><%= errorMsg %></div>
-            <% } %>
-            <div class="form-control">
-                <label for="name">Username</label>
-                <input type="text" name="name" id="name">
-            </div>
-            <div class="form-control">
-                <label for="email">Email</label>
-                <input type="email" name="email" id="email">
-            </div>
-            <div class="form-control">
-                <label for="password">Password</label>
-                <input type="password" name="password" id="password">
-            </div>
-            <div class="form-control">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" name="confirmPassword" id="confirmPassword">
-            </div>
-            <br>
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <button class="btn" type="submit">Signup</button>
-        </form>
+        <div class="flex-container__login-container">
+            <form class="login-form" action="/signup" method="POST">
+                <% if (errorMsg) { %> 
+                    <div class="feedback-msg feedback-msg--error"><%= errorMsg %></div>
+                <% } %>
+                <div class="form-control">
+                    <label for="name">Username</label>
+                    <input type="text" name="name" id="name">
+                </div>
+                <div class="form-control">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email">
+                </div>
+                <div class="form-control">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password">
+                </div>
+                <div class="form-control">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" name="confirmPassword" id="confirmPassword">
+                </div>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <div class="centered">
+                    <button class="btn" type="submit">Signup</button>
+                </div>
+            </form>
+        </div>
     </main>
 <%- include('../includes/tail.ejs') %>
