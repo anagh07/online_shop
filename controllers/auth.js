@@ -17,23 +17,41 @@ sgMail.setApiKey(
 
 exports.getLogin = (req, res) => {
   let errorMsg = req.flash('error');
-  if (errorMsg.length === 0) errorMsg = null;
+  let errors;
+  if (errorMsg.length === 0) {
+    errorMsg = null;
+    errors = [];
+  } else {
+    errors = [{ param: 'invalid' }];
+  }
   res.render('auth/login', {
     pageTitle: 'Login',
     path: '/login',
     errorMsg: errorMsg,
+    enteredData: { email: '' },
+    errors: errors,
   });
 };
 
 exports.postLogin = (req, res) => {
   // Extract from req.body
   const { email, password } = req.body;
+  const errorMsg = validationResult(req);
+
+  // If there are errors
+  if (!errorMsg.isEmpty()) {
+    return res.status(422).render('auth/login', {
+      pageTitle: 'Login',
+      path: '/login',
+      errorMsg: errorMsg.errors[0].msg,
+      enteredData: { email: email },
+      errors: errorMsg.errors,
+    });
+  }
 
   // Find matching user
   User.findOne({ email: email })
     .then((user) => {
-      // Compare user password with entered password
-      if (!user) return res.redirect('/login');
       bcrypt
         .compare(password, user.password)
         .then((matched) => {
@@ -73,42 +91,38 @@ exports.getSignup = (req, res) => {
     pageTitle: 'signup',
     isLoggedIn: false,
     errorMsg: errorMsg,
+    enteredData: { name: '', email: '' },
+    errors: [],
   });
 };
 
 exports.postSignup = (req, res) => {
-  const { name, email, password, confirmPassword } = req.body;
+  const { name, email, password } = req.body;
   const error = validationResult(req);
   if (!error.isEmpty()) {
-    console.log(error);
     return res.status(422).render('auth/signup', {
       path: '/signup',
       pageTitle: 'signup',
       isLoggedIn: false,
-      errorMsg: error,
+      errorMsg: error.errors[0].msg,
+      errors: error.errors,
+      enteredData: { name: name, email: email },
     });
   }
-  User.findOne({ email: email })
-    .then((user) => {
-      if (user) {
-        req.flash('signUpError', 'Email already exists');
-        return res.redirect('/signup');
-      }
-      return bcrypt
-        .hash(password, 12)
-        .then((pass) => {
-          const newUser = new User({
-            name: name,
-            email: email,
-            password: pass,
-            cart: { items: [] },
-          });
-          return newUser.save();
-        })
-        .then((result) => {
-          res.redirect('/login');
-          sgMail.send(signupEmail(email));
-        });
+  return bcrypt
+    .hash(password, 12)
+    .then((pass) => {
+      const newUser = new User({
+        name: name,
+        email: email,
+        password: pass,
+        cart: { items: [] },
+      });
+      return newUser.save();
+    })
+    .then((result) => {
+      res.redirect('/login');
+      sgMail.send(signupEmail(email));
     })
     .catch((err) => console.log(err));
 };

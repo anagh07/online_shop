@@ -8,21 +8,24 @@
 
     <main>
         <form class="product-form" action="/admin/edit-product/<%= prod._id %>" method="POST">
+            <% if (hasError) { %> 
+                <div class="feedback-msg feedback-msg--error"><%= errorMsg %></div>
+            <% } %>
             <div class="form-control">
                 <label for="title">Title</label>
-                <input type="text" name="title" id="title" value="<%= prod.title %>">
+                <input type="text" name="title" id="title" value="<%= prod.title %>" class="<%= errors.find(e => e.param === 'title') ? 'invalid' : '' %>">
             </div>
             <div class="form-control">
                 <label for="imageUrl">Image URL</label>
-                <input type="text" name="imageUrl" id="imageUrl" value="<%= prod.imageUrl %>">
+                <input type="text" name="imageUrl" id="imageUrl" value="<%= prod.imageUrl %>" class="<%= errors.find(e => e.param === 'imageUrl') ? 'invalid' : '' %>">
             </div>
             <div class="form-control">
                 <label for="price">Price</label>
-                <input type="number" name="price" id="price" step="0.01" value="<%= prod.price %>">
+                <input type="number" name="price" id="price" step="0.01" value="<%= prod.price %>" class="<%= errors.find(e => e.param === 'price') ? 'invalid' : '' %>">
             </div>
             <div class="form-control">
                 <label for="desc">Description</label>
-                <textarea name="desc" id="desc" rows="5"><%= prod.desc %></textarea>
+                <textarea name="desc" id="desc" rows="5" class="<%= errors.find(e => e.param === 'desc') ? 'invalid' : '' %>"><%= prod.desc %></textarea>
             </div>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button type="submit">Update</button>

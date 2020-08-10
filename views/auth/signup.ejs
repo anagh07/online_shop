@@ -8,25 +8,41 @@
 
     <main>
         <div class="flex-container__login-container">
-            <form class="login-form" action="/signup" method="POST" novalidate>
+            <form class="login-form" action="/signup" method="POST">
                 <% if (errorMsg) { %> 
                     <div class="feedback-msg feedback-msg--error"><%= errorMsg %></div>
                 <% } %>
                 <div class="form-control">
                     <label for="name">Username</label>
-                    <input type="text" name="name" id="name">
+                    <input 
+                        type="text" 
+                        name="name" 
+                        id="name" 
+                        value="<%= enteredData.name %>" 
+                        class="<%= errors.find(e => e.param === 'name') ? 'invalid' : '' %>"
+                    >
                 </div>
                 <div class="form-control">
                     <label for="email">Email</label>
-                    <input type="email" name="email" id="email">
+                    <input type="email" name="email" id="email" value="<%= enteredData.email %>" class="<%= errors.find(e => e.param === 'email') ? 'invalid' : '' %>">
                 </div>
                 <div class="form-control">
                     <label for="password">Password</label>
-                    <input type="password" name="password" id="password">
+                    <input 
+                        type="password" 
+                        name="password" 
+                        id="password"
+                        class="<%= errors.find(e => e.param === 'password') ? 'invalid' : '' %>"
+                    >
                 </div>
                 <div class="form-control">
                     <label for="confirmPassword">Confirm Password</label>
-                    <input type="password" name="confirmPassword" id="confirmPassword">
+                    <input 
+                        type="password" 
+                        name="confirmPassword" 
+                        id="confirmPassword"
+                        class="<%= errors.find(e => e.param === 'confirmPassword') ? 'invalid' : '' %>"
+                    >
                 </div>
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <div class="centered">

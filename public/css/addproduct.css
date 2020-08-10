@@ -20,16 +20,25 @@
   font-size: 0.8rem;
 }
 
-.form-control input, 
+.form-control input,
 .form-control textarea {
   border: 1.5px solid #aaaaaa;
   font: inherit;
   border-radius: 2px;
+  margin-bottom: 4px;
+  margin-top: 4px;
 }
 
-.form-control input:focus, 
+.form-control input:focus,
 .form-control textarea:focus {
   outline-color: #008080;
+  box-shadow: 0 0 6px #2ca8a8;
+}
+
+.form-control input.invalid,
+.form-control textarea.invalid {
+  box-shadow: 0 0 5px #ff2121;
+  margin-top: 2px;
 }
 
 button {

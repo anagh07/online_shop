@@ -14,12 +14,23 @@
                 <% } %>
                 <div class="form-control">
                     <label for="email">Email</label>
-                    <input type="text" name="email" id="email">
+                    <input 
+                        type="text" 
+                        name="email" 
+                        id="email" 
+                        value="<%= enteredData.email %>"
+                        class="<%= errors.length === 0 ? '' : 'invalid' %>"
+                    >
                 </div>
                 <div class="form-control">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <label for="password">Password</label>
-                    <input type="password" name="password" id="password">
+                    <input 
+                        type="password" 
+                        name="password" 
+                        id="password"
+                        class="<%= errors.length === 0 ? '' : 'invalid' %>"
+                    >
                 </div>
                 <div class="centered" style="margin-bottom: 1rem;">
                     <button type="submit">Login</button>
