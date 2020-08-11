@@ -1,5 +1,6 @@
 const Product = require('../models/product');
 const Order = require('../models/order');
+const serverErrorHandler = require('./error').serverErrorHandle;
 
 exports.getIndex = (req, res) => {
   Product.find()
@@ -15,7 +16,9 @@ exports.getIndex = (req, res) => {
         errorMsg: errorMsg,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };
 
 exports.getAllProductList = (req, res) => {
@@ -27,7 +30,9 @@ exports.getAllProductList = (req, res) => {
         path: '/prod-list',
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };
 
 exports.getProductDetails = (req, res) => {
@@ -42,7 +47,9 @@ exports.getProductDetails = (req, res) => {
         isLoggedIn: req.session.isLoggedIn,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };
 
 exports.getCart = (req, res) => {
@@ -58,7 +65,9 @@ exports.getCart = (req, res) => {
         products: prods,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };
 
 exports.addToCart = (req, res) => {
@@ -73,6 +82,9 @@ exports.addToCart = (req, res) => {
     })
     .then((result) => {
       res.redirect(req.get('referer'));
+    })
+    .catch((err) => {
+      return serverErrorHandler(err, next);
     });
 };
 
@@ -83,7 +95,9 @@ exports.deleteFromCart = (req, res) => {
     .then((result) => {
       res.redirect('/cart');
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };
 
 exports.getOrder = (req, res) => {
@@ -96,7 +110,9 @@ exports.getOrder = (req, res) => {
         orders: orders,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };
 
 exports.postOrder = (req, res) => {
@@ -122,5 +138,7 @@ exports.postOrder = (req, res) => {
     .then(() => {
       res.redirect('/orders');
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };

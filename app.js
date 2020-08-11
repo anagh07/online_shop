@@ -15,7 +15,7 @@ const passDataToViews = require('./middlewares/passDataToViews');
 const adminRoute = require('./routes/admin');
 const shopRoute = require('./routes/shop');
 const authRoute = require('./routes/auth');
-const error404Route = require('./controllers/error');
+const errorRoute = require('./controllers/error');
 
 const PORT = 3000;
 
@@ -54,10 +54,13 @@ app.use((req, res, next) => {
   }
   User.findById(req.session.user._id)
     .then((user) => {
+      if (!user) return next();
       req.user = user;
       next();
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      throw new Error(err);
+    });
 });
 
 // Middleware
@@ -70,7 +73,14 @@ app.use('/admin', adminRoute);
 app.use(shopRoute);
 app.use(authRoute);
 // error route
-app.use(error404Route.get404);
+app.get('/500', errorRoute.get500);
+app.use(errorRoute.get404);
+
+// Server errors
+app.use((error, req, res, next) => {
+  console.log(error);
+  res.redirect('/500');
+});
 
 // DB connect and server start
 mongoose

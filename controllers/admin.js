@@ -1,5 +1,6 @@
 const Product = require('../models/product');
 const { validationResult } = require('express-validator');
+const serverErrorHandler = require('./error').serverErrorHandle;
 
 exports.getAddProducts = (req, res, next) => {
   res.render('admin/add-product', {
@@ -48,10 +49,12 @@ exports.postAddProducts = (req, res, next) => {
       // console.log(result);
       res.redirect('/');
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };
 
-exports.getEditProduct = (req, res) => {
+exports.getEditProduct = (req, res, next) => {
   const prodId = req.params.prodId;
   Product.findById(prodId)
     .then((prod) => {
@@ -65,7 +68,9 @@ exports.getEditProduct = (req, res) => {
         errorMsg: null,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };
 
 exports.postEditProduct = (req, res) => {
@@ -108,7 +113,9 @@ exports.postEditProduct = (req, res) => {
         res.redirect('/admin/products');
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };
 
 exports.deleteProduct = (req, res) => {
@@ -118,7 +125,9 @@ exports.deleteProduct = (req, res) => {
       console.log('Product deleted');
       res.redirect('/admin/products');
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };
 
 exports.getProductsList = (req, res) => {
@@ -132,5 +141,7 @@ exports.getProductsList = (req, res) => {
         pageTitle: 'Admin Product List',
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };

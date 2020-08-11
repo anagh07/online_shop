@@ -4,12 +4,14 @@ const crypto = require('crypto');
 const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
+const serverErrorHandler = require('./error').serverErrorHandle;
 // const signupEmail = require('../data/email').signupEmail;
 const {
   signupEmail,
   resetPasswordEmail,
   resetSuccessEmail,
 } = require('../data/email');
+const { nextTick } = require('process');
 
 sgMail.setApiKey(
   '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'
@@ -33,7 +35,7 @@ exports.getLogin = (req, res) => {
   });
 };
 
-exports.postLogin = (req, res) => {
+exports.postLogin = (req, res, next) => {
   // Extract from req.body
   const { email, password } = req.body;
   const errorMsg = validationResult(req);
@@ -73,7 +75,9 @@ exports.postLogin = (req, res) => {
           console.log(err);
         });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };
 
 exports.postLogout = (req, res) => {
@@ -124,7 +128,9 @@ exports.postSignup = (req, res) => {
       res.redirect('/login');
       sgMail.send(signupEmail(email));
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };
 
 exports.getResetPassword = (req, res) => {
@@ -165,7 +171,9 @@ exports.postResetPassword = (req, res) => {
         res.redirect('/');
         sgMail.send(resetPasswordEmail(req.body.email, token));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        return serverErrorHandler(err, next);
+      });
   });
 };
 
@@ -186,7 +194,9 @@ exports.getNewPassword = (req, res) => {
         passwordToken: token,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };
 
 exports.postNewPassword = (req, res) => {
@@ -219,5 +229,7 @@ exports.postNewPassword = (req, res) => {
       res.redirect('/login');
       sgMail.send(resetSuccessEmail(updatedUser.email));
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return serverErrorHandler(err, next);
+    });
 };
