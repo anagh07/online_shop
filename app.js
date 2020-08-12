@@ -1,15 +1,16 @@
 const express = require('express');
 const bodyparser = require('body-parser');
 const path = require('path');
+const env = require('dotenv');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
+const multer = require('multer');
 
 const rootdir = require('./utils/path');
 const User = require('./models/user');
-const KEYS = require('./config/keys');
 const passDataToViews = require('./middlewares/passDataToViews');
 
 const adminRoute = require('./routes/admin');
@@ -17,7 +18,10 @@ const shopRoute = require('./routes/shop');
 const authRoute = require('./routes/auth');
 const errorRoute = require('./controllers/error');
 
-const PORT = 3000;
+// Environment variables
+env.config({ path: './config/config.env' });
+// env.config({ path: './config/email.env' });
+const PORT = process.env.PORT;
 
 const app = express();
 const csrfProtection = csrf();
@@ -26,15 +30,16 @@ const csrfProtection = csrf();
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-// Use express bodyparser
+// Parsers
 app.use(bodyparser.urlencoded({ extended: false }));
+app.use(multer({ dest: 'images' }).single('imagefile'));
 
 // Public folder for css and js
 app.use(express.static(path.join(rootdir, 'public')));
 
 // Initialize session store
 const sessionStore = new MongoDBStore({
-  uri: KEYS.MONGO_URI,
+  uri: process.env.MONGO_URI,
   collection: 'sessionStore',
 });
 
@@ -85,7 +90,7 @@ app.use((error, req, res, next) => {
 // DB connect and server start
 mongoose
   .connect(
-    KEYS.MONGO_URI,
+    process.env.MONGO_URI,
     { useNewUrlParser: true, useUnifiedTopology: true },
     (err) => {
       if (err) console.log(err);

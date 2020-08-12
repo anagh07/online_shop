@@ -16,7 +16,7 @@ router.post(
   '/add-product',
   [
     body('title', 'Invalid title').isLength({ min: 2 }).trim(),
-    body('imageUrl', 'Please enter valid URL for image.').isURL(),
+    // body('imageUrl', 'Please enter valid URL for image.').isURL(),
     body('price', 'Please enter valid price.').isFloat(),
     body('desc', 'Please enter valid description.')
       .trim()
@@ -37,7 +37,7 @@ router.post(
   isAuth,
   [
     body('title', 'Invalid title').isString().isLength({ min: 2 }).trim(),
-    body('imageUrl', 'Please enter valid URL for image.').isURL(),
+    // body('imageUrl', 'Please enter valid URL for image.').isURL(),
     body('price', 'Please enter valid price.').isFloat(),
     body('desc', 'Please enter valid description.')
       .trim()

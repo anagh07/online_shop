@@ -18,6 +18,8 @@ exports.getAddProducts = (req, res, next) => {
 exports.postAddProducts = (req, res, next) => {
   // Extract data from req.body
   const { title, imageUrl, price, desc } = req.body;
+  const imagefile = req.file;
+  console.log(imagefile);
   // Extract error msgs from request
   const errors = validationResult(req);
 

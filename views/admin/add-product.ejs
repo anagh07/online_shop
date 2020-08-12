@@ -7,7 +7,7 @@
     <%- include('../includes/nav.ejs') %>
 
     <main>
-        <form class="product-form" action="/admin/add-product" method="POST">
+        <form class="product-form" action="/admin/add-product" method="POST" enctype="multipart/form-data">
             <% if (hasError) { %> 
                 <div class="feedback-msg feedback-msg--error"><%= errorMsg %></div>
             <% } %>
@@ -29,6 +29,13 @@
                     id="imageUrl" 
                     value="<%= imageUrl %>"
                     class="<%= errors.find(e => e.param === 'imageUrl') ? 'invalid' : '' %>"
+                >
+            <div class="form-control">
+                <label for="imagefile">Image</label>
+                <input 
+                    type="file" 
+                    name="imagefile" 
+                    id="imagefile" 
                 >
             </div>
             <div class="form-control">
