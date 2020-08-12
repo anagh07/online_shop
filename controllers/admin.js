@@ -1,6 +1,7 @@
 const Product = require('../models/product');
 const { validationResult } = require('express-validator');
 const serverErrorHandler = require('./error').serverErrorHandle;
+const path = require('path');
 
 exports.getAddProducts = (req, res, next) => {
   res.render('admin/add-product', {
@@ -17,11 +18,25 @@ exports.getAddProducts = (req, res, next) => {
 
 exports.postAddProducts = (req, res, next) => {
   // Extract data from req.body
-  const { title, imageUrl, price, desc } = req.body;
+  const { title, price, desc } = req.body;
   const imagefile = req.file;
-  console.log(imagefile);
   // Extract error msgs from request
   const errors = validationResult(req);
+
+  if (!imagefile) {
+    return res.status(422).render('admin/add-product', {
+      pageTitle: 'Add Product',
+      path: '/admin/add-product',
+      title: title,
+      price: price,
+      desc: desc,
+      errors: errors.errors,
+      hasError: true,
+      errorMsg: 'Attached file is not an image',
+    });
+  }
+
+  const imageUrl = path.normalize('/' + imagefile.path);
 
   // For error re-render the page
   if (!errors.isEmpty()) {
@@ -29,7 +44,6 @@ exports.postAddProducts = (req, res, next) => {
       pageTitle: 'Add Product',
       path: '/admin/add-product',
       title: title,
-      imageUrl: imageUrl,
       price: price,
       desc: desc,
       errors: errors.errors,
@@ -75,9 +89,10 @@ exports.getEditProduct = (req, res, next) => {
     });
 };
 
-exports.postEditProduct = (req, res) => {
+exports.postEditProduct = (req, res, next) => {
   const prodId = req.params.prodId;
-  const { title, imageUrl, price, desc } = req.body;
+  const { title, price, desc } = req.body;
+  const imagefile = req.file;
 
   // Extract error msgs
   const errors = validationResult(req);
@@ -89,7 +104,6 @@ exports.postEditProduct = (req, res) => {
       prod: {
         _id: prodId,
         title: title,
-        imageUrl: imageUrl,
         price: price,
         desc: desc,
       },
@@ -107,7 +121,10 @@ exports.postEditProduct = (req, res) => {
         return res.redirect('/');
       }
       prod.title = title;
-      prod.imageUrl = imageUrl;
+      if (imagefile) {
+        // The slash makes the path absolute path from the root dir of project
+        prod.imageUrl = path.normalize('/' + imagefile.path);
+      }
       prod.price = price;
       prod.desc = desc;
       return prod.save().then((result) => {

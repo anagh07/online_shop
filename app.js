@@ -32,10 +32,34 @@ app.set('views', 'views');
 
 // Parsers
 app.use(bodyparser.urlencoded({ extended: false }));
-app.use(multer({ dest: 'images' }).single('imagefile'));
 
-// Public folder for css and js
+// File parser
+const fileStore = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './temp/images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  },
+});
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+app.use(
+  multer({ storage: fileStore, fileFilter: fileFilter }).single('imagefile')
+);
+
+// Public (static) folder for files, css and js
 app.use(express.static(path.join(rootdir, 'public')));
+app.use('/temp/images', express.static(path.join(rootdir, 'temp/images')));
 
 // Initialize session store
 const sessionStore = new MongoDBStore({
