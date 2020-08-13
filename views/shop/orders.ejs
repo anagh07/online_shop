@@ -14,6 +14,7 @@
                   <li class="orders__item">
                       <h3>Order - # <%= order._id %></h3>
                       <p>Placed at: <%= order.createdAt.getFullYear() %>-<%= order.createdAt.getMonth() %>-<%= order.createdAt.getDate() %> at <%= order.createdAt.getHours() %>:<%= order.createdAt.getMinutes() %></p>
+                      <a href="orders/<%= order._id %>">Download invoice</a>
                       <ul class="orders__products">
                           <% order.products.forEach(prod => { %>
                               <li class="orders__products-item"><%= prod.product.title %> (<%= prod.qty %>) --- $<%= prod.product.price %> </li>

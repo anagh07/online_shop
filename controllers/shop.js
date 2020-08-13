@@ -1,6 +1,9 @@
+const path = require('path');
+const fs = require('fs');
 const Product = require('../models/product');
 const Order = require('../models/order');
 const serverErrorHandler = require('./error').serverErrorHandle;
+const PDFDocument = require('pdfkit');
 
 exports.getIndex = (req, res) => {
   Product.find()
@@ -141,4 +144,71 @@ exports.postOrder = (req, res) => {
     .catch((err) => {
       return serverErrorHandler(err, next);
     });
+};
+
+exports.getOrderInvoice = (req, res, next) => {
+  orderId = req.params.orderId;
+  // Check if correct user is logged in
+  Order.findById(orderId)
+    .then((order) => {
+      if (!order) {
+        return serverErrorHandler('Order not found', next);
+      }
+      if (order.user.userId.toString() !== req.user._id.toString()) {
+        return serverErrorHandler(
+          'You can only get orders placed by yourself!',
+          next
+        );
+      }
+      const fileName = 'invoice_' + orderId + '.pdf';
+      const filePath = path.join('data', 'invoices', fileName);
+      // // Preload and send at once
+      // fs.readFile(filePath, (err, data) => {
+      //   if (err) next(err);
+      //   res.setHeader('Content-type', 'application/pdf');
+      //   res.setHeader(
+      //     'Content-Disposition',
+      //     `attachment; filename="${fileName}"`
+      //   );
+      //   res.send(data);
+      // });
+
+      // // Send file as stream
+      // const file = fs.createReadStream(filePath);
+      // res.setHeader('Content-type', 'application/pdf');
+      // res.setHeader(
+      //   'Content-Disposition',
+      //   `attachment; filename="${fileName}"`
+      // );
+      // file.pipe(res);
+
+      // Generate pdf and send as stream
+      const pdf = new PDFDocument();
+      res.setHeader('Content-type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="${fileName}"`
+      );
+      pdf.pipe(fs.createWriteStream(filePath));
+      pdf.pipe(res);
+      // PDF content
+      pdf.fontSize(22).text('Invoice');
+      pdf.fontSize(14).text(`Order number: ${order._id.toString()}`);
+      pdf.text(
+        '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -'
+      );
+      let totalPrice = 0;
+      order.products.forEach((prod) => {
+        totalPrice += prod.product.price * prod.qty;
+        pdf.text(
+          `${prod.product.title} - ${prod.qty} - $${prod.product.price}`
+        );
+      });
+      pdf.text(
+        '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -'
+      );
+      pdf.text(`Total Price: $${totalPrice}`);
+      pdf.end();
+    })
+    .catch((err) => next(err));
 };

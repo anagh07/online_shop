@@ -31,6 +31,10 @@ router.post('/cart/delete-cart-item', isAuth, shopController.deleteFromCart);
 // @ROUTE   /orders
 router.get('/orders', isAuth, shopController.getOrder);
 
+// @METHOD  GET
+// @ROUTE   /orders/:orderId
+router.get('/orders/:orderId', isAuth, shopController.getOrderInvoice);
+
 // @METHOD  POST
 // @ROUTE   /checkout
 router.post('/place-order', isAuth, shopController.postOrder);
