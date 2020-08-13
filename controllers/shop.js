@@ -5,8 +5,19 @@ const Order = require('../models/order');
 const serverErrorHandler = require('./error').serverErrorHandle;
 const PDFDocument = require('pdfkit');
 
-exports.getIndex = (req, res) => {
+const ITEMS_PER_PAGE = 5;
+
+exports.getIndex = (req, res, next) => {
+  const pageNum = parseInt(req.query.page) || 1;
+  let totalNumOfProd = 0;
   Product.find()
+    .countDocuments()
+    .then((prodNum) => {
+      totalNumOfProd = prodNum;
+      return Product.find()
+        .skip((pageNum - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((prods) => {
       let tempMsg = req.flash('resetPasswordEmailSent');
       let errorMsg = tempMsg.length === 0 ? null : tempMsg;
@@ -17,6 +28,13 @@ exports.getIndex = (req, res) => {
         pageTitle: 'Shop',
         path: '/',
         errorMsg: errorMsg,
+        totalProducts: totalNumOfProd,
+        hasNextPage: pageNum * ITEMS_PER_PAGE < totalNumOfProd,
+        hasPreviousPage: pageNum > 1,
+        nextPage: pageNum + 1,
+        previousPage: pageNum - 1,
+        lastPage: Math.ceil(totalNumOfProd / ITEMS_PER_PAGE),
+        currentPage: pageNum,
       });
     })
     .catch((err) => {
@@ -24,13 +42,29 @@ exports.getIndex = (req, res) => {
     });
 };
 
-exports.getAllProductList = (req, res) => {
+exports.getAllProductList = (req, res, next) => {
+  const pageNum = parseInt(req.query.page) || 1;
+  let totalNumOfProd = 0;
   Product.find()
+    .countDocuments()
+    .then((prodNum) => {
+      totalNumOfProd = prodNum;
+      return Product.find()
+        .skip((pageNum - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((prods) => {
       res.render('shop/prod-list', {
         prod: prods,
         pageTitle: 'Products',
         path: '/prod-list',
+        totalProducts: totalNumOfProd,
+        hasNextPage: pageNum * ITEMS_PER_PAGE < totalNumOfProd,
+        hasPreviousPage: pageNum > 1,
+        nextPage: pageNum + 1,
+        previousPage: pageNum - 1,
+        lastPage: Math.ceil(totalNumOfProd / ITEMS_PER_PAGE),
+        currentPage: pageNum,
       });
     })
     .catch((err) => {
