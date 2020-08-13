@@ -3,6 +3,9 @@ const { validationResult } = require('express-validator');
 const serverErrorHandler = require('./error').serverErrorHandle;
 const path = require('path');
 
+const file = require('../utils/file');
+const { dirname } = require('path');
+
 exports.getAddProducts = (req, res, next) => {
   res.render('admin/add-product', {
     pageTitle: 'Add Product',
@@ -124,6 +127,8 @@ exports.postEditProduct = (req, res, next) => {
       if (imagefile) {
         // The slash makes the path absolute path from the root dir of project
         prod.imageUrl = path.normalize('/' + imagefile.path);
+        // Delete existing image file
+        file.deleteProdImage(imagefile.path);
       }
       prod.price = price;
       prod.desc = desc;
@@ -137,11 +142,22 @@ exports.postEditProduct = (req, res, next) => {
     });
 };
 
-exports.deleteProduct = (req, res) => {
+exports.deleteProduct = (req, res, next) => {
   const prodId = req.body.prodId;
-  Product.deleteOne({ _id: prodId, userId: req.user._id })
+  // Delete the existing image file from storage
+  Product.findById(prodId)
+    .then((prod) => {
+      if (!prod) {
+        return serverErrorHandler('Cannot delete, prod not found', next);
+      }
+      const filePath = path.join(
+        path.dirname(process.mainModule.filename),
+        prod.imageUrl
+      );
+      file.deleteProdImage(filePath);
+      return Product.deleteOne({ _id: prodId, userId: req.user._id });
+    })
     .then((result) => {
-      console.log('Product deleted');
       res.redirect('/admin/products');
     })
     .catch((err) => {
