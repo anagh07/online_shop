@@ -143,7 +143,7 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.deleteProduct = (req, res, next) => {
-  const prodId = req.body.prodId;
+  const prodId = req.params.prodId;
   // Delete the existing image file from storage
   Product.findById(prodId)
     .then((prod) => {
@@ -158,10 +158,10 @@ exports.deleteProduct = (req, res, next) => {
       return Product.deleteOne({ _id: prodId, userId: req.user._id });
     })
     .then((result) => {
-      res.redirect('/admin/products');
+      res.status(200).json({ message: 'Successfully deleted' });
     })
     .catch((err) => {
-      return serverErrorHandler(err, next);
+      res.status(500).json({ message: 'Failed to delete product' });
     });
 };
 

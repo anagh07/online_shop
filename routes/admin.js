@@ -46,9 +46,9 @@ router.post(
   adminController.postEditProduct
 );
 
-// @METHOD  POST
+// @METHOD  DELETE
 // @ROUTE   /admin/delete-product
-router.post('/delete-product', isAuth, adminController.deleteProduct);
+router.delete('/products/:prodId', isAuth, adminController.deleteProduct);
 
 // @METHOD  GET
 // @ROUTE   /admin/product-list
