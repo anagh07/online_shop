@@ -22,6 +22,12 @@ router.get('/cart', isAuth, shopController.getCart);
 // @DESC    add item to cart
 router.post('/cart', isAuth, shopController.addToCart);
 
+// @METHOD  GET
+// @ROUTE   /checkout
+router.get('/checkout', isAuth, shopController.getCheckout);
+router.get('/checkout/success', isAuth, shopController.getCheckoutSuccess);
+router.get('/checkout/cancel', isAuth, shopController.getCheckout);
+
 // @METHOD  POST
 // @ROUTE   /cart/delete-cart-item
 // @DESC    delete item from cart
@@ -35,9 +41,9 @@ router.get('/orders', isAuth, shopController.getOrder);
 // @ROUTE   /orders/:orderId
 router.get('/orders/:orderId', isAuth, shopController.getOrderInvoice);
 
-// @METHOD  POST
-// @ROUTE   /checkout
-router.post('/place-order', isAuth, shopController.postOrder);
+// // @METHOD  POST
+// // @ROUTE   /checkout
+// router.post('/place-order', isAuth, shopController.postOrder);
 
 // @METHOD  GET
 // @ROUTE   /prod-list/:prodId
