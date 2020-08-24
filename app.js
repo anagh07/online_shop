@@ -30,6 +30,10 @@ const csrfProtection = csrf();
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
+// Public (static) folder for files, css and js
+app.use(express.static(path.join(rootdir, 'public')));
+app.use('/temp/images', express.static(path.join(rootdir, 'temp/images')));
+
 // Parsers
 app.use(bodyparser.urlencoded({ extended: false }));
 
@@ -56,10 +60,6 @@ const fileFilter = (req, file, cb) => {
 app.use(
   multer({ storage: fileStore, fileFilter: fileFilter }).single('imagefile')
 );
-
-// Public (static) folder for files, css and js
-app.use(express.static(path.join(rootdir, 'public')));
-app.use('/temp/images', express.static(path.join(rootdir, 'temp/images')));
 
 // Initialize session store
 const sessionStore = new MongoDBStore({
