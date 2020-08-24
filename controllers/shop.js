@@ -4,6 +4,7 @@ const Product = require('../models/product');
 const Order = require('../models/order');
 const serverErrorHandler = require('./error').serverErrorHandle;
 const PDFDocument = require('pdfkit');
+// Load environment variables
 const env = require('dotenv');
 env.config({ path: './config.env' });
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
