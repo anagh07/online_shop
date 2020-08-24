@@ -15,7 +15,7 @@ const {
 const { nextTick } = require('process');
 
 // Environment variables
-env.config({ path: './config/config.env' });
+env.config({ path: './config.env' });
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 exports.getLogin = (req, res) => {
