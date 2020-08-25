@@ -15,7 +15,7 @@ exports.resetPasswordEmail = (toEmail, token) => {
     html: `
       <h3>Password Reset</h3>
       <p>
-        Please click this <a href="http://localhost:3000/reset-password/${token}">link</a> to reset your password.
+        Please click this <a href="https://ecommercetintin.herokuapp.com/reset-password/${token}">link</a> to reset your password.
       </p>
     `,
   }
