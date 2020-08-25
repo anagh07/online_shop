@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyparser = require('body-parser');
 const path = require('path');
+const fs = require('fs');
 const env = require('dotenv');
 const mongoose = require('mongoose');
 const session = require('express-session');
@@ -8,6 +9,9 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
 const multer = require('multer');
+const helmet = require('helmet');
+const compression = require('compression');
+const morgan = require('morgan');
 
 const rootdir = require('./utils/path');
 const User = require('./models/user');
@@ -22,6 +26,7 @@ const errorRoute = require('./controllers/error');
 env.config({ path: './config.env' });
 // env.config({ path: './config/email.env' });
 const PORT = process.env.PORT;
+console.log(process.env.NODE_ENV);
 
 const app = express();
 const csrfProtection = csrf();
@@ -96,6 +101,13 @@ app.use((req, res, next) => {
 app.use(csrfProtection);
 app.use(passDataToViews);
 app.use(flash());
+app.use(helmet());
+app.use(compression());
+const morganLogStream = fs.createWriteStream(
+   path.join(__dirname, 'logs', 'accessLog.log'),
+   { flags: 'a' }
+);
+app.use(morgan('combined', { stream: morganLogStream }));
 
 // ROUTES
 app.use('/admin', adminRoute);
