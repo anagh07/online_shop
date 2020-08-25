@@ -8,6 +8,7 @@ const PDFDocument = require('pdfkit');
 const env = require('dotenv');
 env.config({ path: './config.env' });
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+console.log(process.env.STRIPE_SECRET_KEY);
 
 const ITEMS_PER_PAGE = 5;
 
@@ -122,7 +123,7 @@ exports.addToCart = (req, res, next) => {
          return req.user.addToCart(prod);
       })
       .then((result) => {
-         res.redirect(req.get('referer'));
+         res.redirect(req.get('Referer'));
       })
       .catch((err) => {
          return serverErrorHandler(err, next);
@@ -254,6 +255,7 @@ exports.getOrderInvoice = (req, res, next) => {
 exports.getCheckout = (req, res, next) => {
    let prods;
    let totalPrice = 0;
+   console.log('Render checkout page');
    req.user
       .populate('cart.items.prodId')
       .execPopulate()
@@ -262,6 +264,7 @@ exports.getCheckout = (req, res, next) => {
          prods.forEach((prod) => {
             totalPrice += prod.prodId.price * prod.qty;
          });
+         console.log('Found user');
          // Create payment session
          return stripe.checkout.sessions.create({
             payment_method_types: ['card'],
