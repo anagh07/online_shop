@@ -7,7 +7,7 @@ Full stack e-commerce online shop website with cart, checkout, payment, authenti
 <br>
 <p align="center">
   <a href="https://ecommercetintin.herokuapp.com/">
-    <img width="720" height="400" src="ecommerce_gif.gif">
+    <img width="720" height="400" src="ecommerce.gif">
   </a>
 </p>
 
