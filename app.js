@@ -104,7 +104,7 @@ app.use(flash());
 app.use(helmet());
 app.use(compression());
 const morganLogStream = fs.createWriteStream(
-   path.join(__dirname, 'logs', 'accessLog.log'),
+   path.join(__dirname, 'accessLog.log'),
    { flags: 'a' }
 );
 app.use(morgan('combined', { stream: morganLogStream }));
