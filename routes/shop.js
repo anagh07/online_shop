@@ -49,4 +49,8 @@ router.get('/orders/:orderId', isAuth, shopController.getOrderInvoice);
 // @ROUTE   /prod-list/:prodId
 router.get('/prod-list/:prodId', shopController.getProductDetails);
 
+// @METHOD  GET
+// @ROUTE   /pingme
+router.get('/pingme', shopController.getPingMe);
+
 module.exports = router;
