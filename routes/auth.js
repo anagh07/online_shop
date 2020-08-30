@@ -68,9 +68,7 @@ router.post(
       .isAlphanumeric()
       .isLength({ min: 5, max: 30 })
       .trim(),
-    body('name', 'Username cannot be empty.')
-      .isAlphanumeric()
-      .isLength({ min: 1 }),
+    body('name', 'Username cannot be empty.').isLength({ min: 1 }),
     body('confirmPassword')
       .custom((value, { req }) => {
         if (value !== req.body.password) {
